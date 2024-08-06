@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: load-server
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: load-server
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: load-server
+    spec:
+      containers:
+      - image: ameeddevops/load-server
+        name: load-server
+        ports:
+        - containerPort: 80
