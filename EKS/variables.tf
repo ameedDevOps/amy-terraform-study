@@ -1,6 +1,6 @@
 variable "region" {
   description = "The AWS region to deploy resources in"
-  default     = "us-west-2"
+  default     = "us-east-2"
 }
 
 variable "vpc_cidr" {
@@ -22,7 +22,8 @@ variable "private_subnet_cidrs" {
 
 variable "availability_zones" {
   description = "The availability zones to use"
-  default     = ["us-west-2a", "us-west-2b", "us-west-2c"]
+  type = list(string)
+  default     = ["us-east-2a", "us-east-2b", "us-east-2c"]
 }
 
 variable "instance_type" {
