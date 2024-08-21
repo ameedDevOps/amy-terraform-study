@@ -1,0 +1,104 @@
+# Creatin role and rolebinding to confgure RBAC at namespace level. In below configuration we are giving full #
+# full access of demo namespace to "eks-poc-super-admin" user which is holding "eks-poc-super-admin-rbac" #
+
+# role.yaml
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: demo
+  name: full_access
+rules:
+- apiGroups: ["*"]
+  resources: ["*"]
+  verbs: ["*"]
+
+---
+# rolebinding.yaml
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: full_access_role_binding
+  namespace: demo
+subjects:
+- kind: User
+  name: eks-poc-super-admin
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: full_access
+  apiGroup: rbac.authorization.k8s.io
+
+---
+# Creatin role and rolebinding to confgure RBAC at namespace level. In below configuration we are giving only #
+# limited access which is only list the resource of demo namespace to "eks-poc-qa" user which is holding "eks-poc-qa-rbac" #
+# role.yaml
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: demo
+  name: limited_access
+rules:
+- apiGroups: ["*"]
+  resources: ["*"]
+  verbs: ["list"]
+
+---
+# rolebinding.yaml
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: limited_access_role_binding
+  namespace: demo
+subjects:
+- kind: User
+  name: eks-poc-qa
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: limited_access
+  apiGroup: rbac.authorization.k8s.io
+
+---
+#Cluster Role for providing full access 
+# clusterrole.yaml
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: cr_full_access
+rules:
+- apiGroups: ["*"]
+  resources: ["*"]
+  verbs: ["*"]
+
+---
+# If you want to give access for perticular namespace on cluster level
+# below is example for develop namespace
+# rolebinding_cr.yaml
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: full_access_role_binding_cr
+  namespace: develop
+subjects:
+- kind: User
+  name: marcincuber-role
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: full_access
+  apiGroup: rbac.authorization.k8s.io
+
+---
+# for all namespace on cluster level access
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: full_access_cluster_role_binding
+subjects:
+- kind: User
+  name: marcincuber-role
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: cr_full_access
+  apiGroup: rbac.authorization.k8s.io
